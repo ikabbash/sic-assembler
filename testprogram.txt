@@ -1,0 +1,20 @@
+Prog1  Start 0000
+       LDA   ZERO
+       STA   INDEX
+LOOP   TIO   INDEX
+       LDA   ZERO
+.I am a bloody comment
+       STA   ALPHA,X
+       LDA   INDEX
+       ADDR  THREE
+       STA   INDEX
+       COMP  K300
+       TIXR  TWENTY
+       JLT   LOOP
+INDEX  RESW  1
+ALPHA  RESW  100
+ZERO   BYTE  X'26'
+K300   WORD  100
+THREE  BYTE  C'0F2'
+TWENTY WORD  20
+       END   0000
