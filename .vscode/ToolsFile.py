@@ -20,6 +20,7 @@ with open("instructions.txt") as textFile:
 # To check the instructions for the unique. #
 # ones and the one in the instruction text. #
 
+
 def checkinstructions(teststring):
     i = 0
     found = False
@@ -30,6 +31,8 @@ def checkinstructions(teststring):
     if teststring in "WORD":
         found = True
     if teststring in "RESW":
+        found = True
+    if teststring in "RESTW":
         found = True
     while i in range(len(instructions)):
         if teststring in instructions[i][0]:
@@ -44,7 +47,7 @@ def checkinstructions(teststring):
 # start with a comment
 def operations():
     opArray = []
-    for i in range(1,len(progArr)-1):  # keda wa2feen 3and el row
+    for i in range(1, len(progArr)-1):  # keda wa2feen 3and el row
         if not '.' in progArr[i][1]:
             if not '.' in progArr[i][0]:
                 if checkinstructions(progArr[i][1]) == True:
@@ -59,11 +62,9 @@ def operations():
 # in the VARIABLES, and if there is we created a new
 # array to store the instructions that don't
 # start with a comment
-
-
 def variables():
     varArray = []
-    for i in range(1,len(progArr)-1):  # keda wa2feen 3and el row
+    for i in range(1, len(progArr)-1):  # keda wa2feen 3and el row
         if not '.' in progArr[i][2]:
             if not '.' in progArr[i][1]:
                 if not '.' in progArr[i][0]:
@@ -75,11 +76,9 @@ def variables():
 # in the INDEXES, and if there is we created a new
 # array to store the instructions that don't
 # start with a comment
-
-
 def indexs():
     indexsArray = []
-    for i in range(1,len(progArr)-1):  # keda wa2feen 3and el row
+    for i in range(1, len(progArr)-1):  # keda wa2feen 3and el row
         if not '.' in progArr[i][0]:
             indexsArray.append(progArr[i][0])
     return indexsArray
@@ -90,10 +89,12 @@ def indexs():
 # will execute on.
 def appendall():
     finalArray = []
-    finalArray = list(zip(indexs(),operations(), variables()))
+    finalArray = list(zip(indexs(), operations(), variables()))
     return finalArray
-#function to get the starting address of the program
-def startingadress() :
-    startlocation=progArr[0][2]
+# function to get the starting address of the program
+
+
+def startingadress():
+    startlocation = progArr[0][2]
 
     return startlocation
