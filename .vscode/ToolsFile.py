@@ -92,3 +92,8 @@ def appendall():
     finalArray = []
     finalArray = list(zip(indexs(),operations(), variables()))
     return finalArray
+#function to get the starting address of the program
+def startingadress() :
+    startlocation=progArr[0][2]
+
+    return startlocation
