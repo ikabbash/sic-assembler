@@ -1,15 +1,14 @@
 Prog1  Start 0000
        LDA   ZERO
        STA   INDEX
-LOOP   TIO   INDEX
+LOOP   ADD   INDEX
        LDA   ZERO
-.I am a bloody comment
        STA   ALPHA,X
        LDA   INDEX
-       ADDR  THREE
+       ADD   THREE
        STA   INDEX
        COMP  K300
-       TIXR  TWENTY
+       TIX   TWENTY
        JLT   LOOP
 INDEX  RESW  1
 ALPHA  RESW  100
