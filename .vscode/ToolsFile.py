@@ -6,14 +6,14 @@ import re
 fin = open("testprogram.txt", "rt")
 fout = open("program.txt", "wt")
 for line in fin:
-    fout.write(re.sub('\s+', ',', line))
+    fout.write(re.sub('\s+', '*', line))
     fout.write('\n')
 
 fin.close()
 fout.close()
 
 with open("program.txt") as textFile:
-    progArr = [line.split(',') for line in textFile]
+    progArr = [line.split('*') for line in textFile]
 with open("instructions.txt") as textFile:
     instructions = [line.split(' ') for line in textFile]
 
