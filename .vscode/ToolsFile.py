@@ -23,6 +23,10 @@ with open("instructions.txt") as textFile:
 # To check the instructions for the unique. #
 # ones and the one in the instruction text. #
 
+# To get the last number of the location counter
+locationFile = open("locationCounter.txt", "rt")
+locationCounter = locationFile.readlines()
+
 
 def checkinstructions(teststring):
     i = 0
@@ -100,5 +104,19 @@ def appendall():
 # To get the value of the start of the program
 def startingadress():
     startlocation = progArr[0][2]
-
     return startlocation
+
+# To get the name of the program
+
+
+def ProgName():
+    ProgName = progArr[0][0].ljust(6, 'x')
+    # print(ProgName)
+    return ProgName
+
+
+def ProgLength():
+    ProgLen = hex(int(locationCounter[-1], 16) +
+                  3).split('x')[-1].upper().zfill(6)
+    # print(ProgLen)
+    return ProgLen

@@ -2,20 +2,25 @@ import re
 import ToolsFile
 import pass1
 
+# We open the instruction table that has the OP code & the symbol table for reading the calculations.
+with open("instructions.txt") as textFile:
+    opArr = [line.split(' ') for line in textFile]
+with open("symbolTable.txt") as textFile:
+    symbArr = [line.split(' ') for line in textFile]
+
+HTE_File = open("HTE_Record.txt", "wt")
+
+# Our assembly code we'll read/trace from.
+finalArr = ToolsFile.appendall()
+# Where we'll store the result of Object Code.
+objectcodeFile = open("ObjectCode.txt", "wt")
+
+# We imported location counter for the HTE Record
+LFile = open("locationCounter.txt", "rt")
+LArray = LFile.readlines()
+
 
 def ObjectCode():
-
-    # We open the instruction table that has the OP code & the symbol table for reading the calculations.
-    with open("instructions.txt") as textFile:
-        opArr = [line.split(' ') for line in textFile]
-    with open("symbolTable.txt") as textFile:
-        symbArr = [line.split(' ') for line in textFile]
-
-    # Our assembly code we'll read/trace from.
-    finalArr = ToolsFile.appendall()
-    # Where we'll store the result of Object Code.
-    objectcodeFile = open("ObjectCode.txt", "wt")
-
     for i in range(len(finalArr)):  # Tracing the first row of our list.
 
         if "BYTE" in finalArr[i][1]:
@@ -35,7 +40,7 @@ def ObjectCode():
 
         # We check if we are reading the operations that shouldn't generate Object Code.
         if "RESW" in finalArr[i][1] or "RESB" in finalArr[i][1] or "RESTW" in finalArr[i][1]:
-            opBits = "no object code !"
+            opBits = "No object code!"
             objectcodeFile.write(opBits+"\n")
 
         # Starting from here if we have the cases of WORD or BYTE, we do a specific calculation.
@@ -66,6 +71,36 @@ def ObjectCode():
 
                     # We write down the Object Code we calculated
                     objectcodeFile.write(hexObjectCode+"\n")
+    objectcodeFile.close()
 
 
-# def HTE_Record():
+def HTE_Record():
+
+    ObjectFile = open("ObjectCode.txt", "rt")
+    ObjectCodeArray = ObjectFile.readlines()
+    print(ObjectCodeArray)
+    # To get the header
+    Header = str("H." + ToolsFile.ProgName() + "." +
+                 ToolsFile.startingadress().zfill(6) + "." + ToolsFile.ProgLength())
+
+    # To get the end
+    End = str("E." + ToolsFile.startingadress().zfill(6))
+    Count = 0
+    TStart = ToolsFile.startingadress()
+
+    # To get the text
+    for i in range(len(ObjectCodeArray)):
+        TObj = []
+        if "No object code!" not in ObjectCodeArray[i]:
+            if i == range(len(ObjectCodeArray)):
+                if Count == 0:
+                    TStart = LArray[i]
+                TObj[i] = ObjectCodeArray[i]
+                print(TObj)
+                Count = Count + 3
+        else:
+            print("MY EXISTENCE IS PAIN!!!")
+            HTE_File.write("T." + TStart + "." + hex(Count).split('x')
+                           [-1].upper().zfill(2) + "".join(TObj))
+            Count = 0
+            TObj.clear()

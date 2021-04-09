@@ -9,8 +9,8 @@
 280154
 2C0158
 380006
-no object code !
-no object code !
+No object code!
+No object code!
 26
 280154
 000064
