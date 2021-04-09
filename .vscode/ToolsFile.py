@@ -3,9 +3,12 @@ import re
 # before exectuion.
 
 
+# We read the assembly program from the user in program.txt
+# testprogram is for other uses not related to the user
 fin = open("testprogram.txt", "rt")
 fout = open("program.txt", "wt")
 for line in fin:
+    # We put a '*' after each line of assembly code
     fout.write(re.sub('\s+', '*', line))
     fout.write('\n')
 
@@ -47,13 +50,13 @@ def checkinstructions(teststring):
 # start with a comment
 def operations():
     opArray = []
-    for i in range(1, len(progArr)-1):  # keda wa2feen 3and el row
+    for i in range(1, len(progArr)-1):  # We start from the row
         if not '.' in progArr[i][1]:
             if not '.' in progArr[i][0]:
                 if checkinstructions(progArr[i][1]) == True:
                     opArray.append(progArr[i][1])
                 elif checkinstructions(progArr[i][1]) == False:
-                    print("ERROOOOOOOOOOOOOR WRONG INSTRUCTIOOOOOOOOOON!!!!")
+                    print("ERROR: Wrong instruction input.")
                     break
     return opArray
 
@@ -64,7 +67,7 @@ def operations():
 # start with a comment
 def variables():
     varArray = []
-    for i in range(1, len(progArr)-1):  # keda wa2feen 3and el row
+    for i in range(1, len(progArr)-1):  # We start from the row
         if not '.' in progArr[i][2]:
             if not '.' in progArr[i][1]:
                 if not '.' in progArr[i][0]:
@@ -78,7 +81,7 @@ def variables():
 # start with a comment
 def indexs():
     indexsArray = []
-    for i in range(1, len(progArr)-1):  # keda wa2feen 3and el row
+    for i in range(1, len(progArr)-1):  # We start from the row
         if not '.' in progArr[i][0]:
             indexsArray.append(progArr[i][0])
     return indexsArray
@@ -94,6 +97,7 @@ def appendall():
 # function to get the starting address of the program
 
 
+# To get the value of the start of the program
 def startingadress():
     startlocation = progArr[0][2]
 
