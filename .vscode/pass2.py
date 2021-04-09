@@ -7,9 +7,6 @@ with open("instructions.txt") as textFile:
     opArr = [line.split(' ') for line in textFile]
 with open("symbolTable.txt") as textFile:
     symbArr = [line.split(' ') for line in textFile]
-
-HTE_File = open("HTE_Record.txt", "wt")
-
 # Our assembly code we'll read/trace from.
 finalArr = ToolsFile.appendall()
 # Where we'll store the result of Object Code.
@@ -75,32 +72,51 @@ def ObjectCode():
 
 
 def HTE_Record():
-
+    open('HTE_Record.txt', 'w').close()
+    HTE_File = open("HTE_Record.txt", "a")
     ObjectFile = open("ObjectCode.txt", "rt")
     ObjectCodeArray = ObjectFile.readlines()
     print(ObjectCodeArray)
     # To get the header
+
     Header = str("H." + ToolsFile.ProgName() + "." +
                  ToolsFile.startingadress().zfill(6) + "." + ToolsFile.ProgLength())
-
+    HTE_File.write(Header+"\n")
     # To get the end
+
     End = str("E." + ToolsFile.startingadress().zfill(6))
     Count = 0
     TStart = ToolsFile.startingadress()
-
+    Tobj= ""
     # To get the text
-    for i in range(len(ObjectCodeArray)):
-        TObj = []
-        if "No object code!" not in ObjectCodeArray[i]:
-            if i == range(len(ObjectCodeArray)):
-                if Count == 0:
-                    TStart = LArray[i]
-                TObj[i] = ObjectCodeArray[i]
-                print(TObj)
-                Count = Count + 3
+    for i in range(len(ObjectCodeArray)) : #loop 3ala element element
+        if ("No object code!" in ObjectCodeArray[i]) : # break condition
+            if Tobj!="" :
+                HTE_File.write(hex(Count).split('x')[-1].upper().zfill(2)+""+str(Tobj).replace("\n","")+"\n")
+            Count=0
+            Tobj=""
+        elif (Count == 30) :
+            if Tobj!="" :
+                HTE_File.write(hex(Count).split('x')[-1].upper().zfill(2)+""+str(Tobj).replace("\n","")+"\n")
+            Count=3
+            HTE_File.write("T." + LArray[i].zfill(6).replace("\n", "") + ".")
+            Tobj= ("."+ObjectCodeArray[i])
+
+        elif i== len(ObjectCodeArray) -1:
+            if Tobj != "":
+                HTE_File.write(hex(Count).split('x')[-1].upper().zfill(2) + "" + str(Tobj).replace("\n", "") + "\n")
+            HTE_File.write(End)
         else:
-            print("MY EXISTENCE IS PAIN!!!")
-            HTE_File.write("T." + TStart + "." + hex(Count).split('x')
-                           [-1].upper().zfill(2) + "".join(TObj))
-            Count = 0
-            TObj.clear()
+            if Count==0 :
+                HTE_File.write("T." + LArray[i].zfill(6).replace("\n","") + ".")
+            Count= Count+3
+            Tobj =(Tobj+"."+ObjectCodeArray[i])
+
+
+    HTE_File.close()
+
+
+
+
+
+

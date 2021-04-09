@@ -28,7 +28,7 @@ def locationCounter():
         counter = hex(temp).split('x')[-1].upper()
         fout.write(str(counter).zfill(4))
         fout.write('\n')
-
+    fout.close()
 
 def SymbolTable():
     fout = open("locationCounter.txt", "rt")
