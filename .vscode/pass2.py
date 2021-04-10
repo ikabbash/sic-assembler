@@ -47,6 +47,10 @@ def ObjectCode():
             addressBits = hex(int(finalArr[i][2])).split('x')[-1].upper()
             objectcodeFile.write(addressBits.zfill(6)+"\n")
 
+        # If we passed by an RSUB
+        if "RSUB" in finalArr[i][1]:
+            objectcodeFile.write("4C0000"+"\n")
+
         else:  # If it's not any of the special cases above, we'll do our Object Code normally as below.
             for j in range(len(opArr)):  # We trace through the instruction table
                 if finalArr[i][1] in opArr[j][0]:  # Ex: if LDA = LDA
@@ -60,8 +64,9 @@ def ObjectCode():
                         xBit = '0'
                     # We trace through the symbol table we generated
                     for m in range(len(symbArr)):
-                        if finalArr[i][2].replace(',X', "") in symbArr[m][0]:  # ????
-                            addressBits = (
+                        # remove the ',X' so we can read the address properly
+                        if finalArr[i][2].replace(',X', "") in symbArr[m][0]:
+                            addressBits = (  # We convert the value from the Symbol Table
                                 bin(int(symbArr[m][1], 16))[2:]).zfill(15)
                     hexObjectCode = hex(  # The final assembly, we add the binary with each other then convert it to hex
                         int((opBits+''+xBit+''+addressBits), 2)).split('x')[-1].upper().zfill(6)
@@ -72,51 +77,57 @@ def ObjectCode():
 
 
 def HTE_Record():
+
+    # HTE Record storation
     open('HTE_Record.txt', 'w').close()
+
+    # We assigned lists from the object code for the HTE
     HTE_File = open("HTE_Record.txt", "a")
     ObjectFile = open("ObjectCode.txt", "rt")
     ObjectCodeArray = ObjectFile.readlines()
     print(ObjectCodeArray)
-    # To get the header
 
+    # To get the header (H.)
     Header = str("H." + ToolsFile.ProgName() + "." +
                  ToolsFile.startingadress().zfill(6) + "." + ToolsFile.ProgLength())
     HTE_File.write(Header+"\n")
-    # To get the end
 
+    # To get the end (E.)
     End = str("E." + ToolsFile.startingadress().zfill(6))
+
+    # We assigned our initiatives for the loop below
     Count = 0
     TStart = ToolsFile.startingadress()
-    Tobj= ""
-    # To get the text
-    for i in range(len(ObjectCodeArray)) : #loop 3ala element element
-        if ("No object code!" in ObjectCodeArray[i]) : # break condition
-            if Tobj!="" :
-                HTE_File.write(hex(Count).split('x')[-1].upper().zfill(2)+""+str(Tobj).replace("\n","")+"\n")
-            Count=0
-            Tobj=""
-        elif (Count == 30) :
-            if Tobj!="" :
-                HTE_File.write(hex(Count).split('x')[-1].upper().zfill(2)+""+str(Tobj).replace("\n","")+"\n")
-            Count=3
-            HTE_File.write("T." + LArray[i].zfill(6).replace("\n", "") + ".")
-            Tobj= ("."+ObjectCodeArray[i])
+    Tobj = ""  # A temp that carries T record
 
-        elif i== len(ObjectCodeArray) -1:
+    # To get the text (T.)
+    for i in range(len(ObjectCodeArray)):  # We loop through the Object Code file
+        # The break condition of the Text record
+        if ("No object code!" in ObjectCodeArray[i]):
+            if Tobj != "":  # As long as Tobj doesn't equal to ""
+                HTE_File.write(hex(Count).split(
+                    'x')[-1].upper().zfill(2)+""+str(Tobj).replace("\n", "")+"\n")
+            Count = 0
+            Tobj = ""
+        elif (Count == 30):  # The other break condition of the Text record
+            if Tobj != "":  # We put it due to a bug not properly executing the lines below
+                HTE_File.write(hex(Count).split(
+                    'x')[-1].upper().zfill(2)+""+str(Tobj).replace("\n", "")+"\n")
+            Count = 3  # RELATED: we put the counter to 3 because we used a word in the T record
+            HTE_File.write("T." + LArray[i].zfill(6).replace("\n", "") + ".")
+            Tobj = ("."+ObjectCodeArray[i])
+
+        elif i == len(ObjectCodeArray) - 1:  # When the text record reaches the end
             if Tobj != "":
-                HTE_File.write(hex(Count).split('x')[-1].upper().zfill(2) + "" + str(Tobj).replace("\n", "") + "\n")
+                HTE_File.write(hex(Count).split(
+                    'x')[-1].upper().zfill(2) + "" + str(Tobj).replace("\n", "") + "\n")
             HTE_File.write(End)
         else:
-            if Count==0 :
-                HTE_File.write("T." + LArray[i].zfill(6).replace("\n","") + ".")
-            Count= Count+3
-            Tobj =(Tobj+"."+ObjectCodeArray[i])
-
+            if Count == 0:  # RELATED: the reason why we made the count = 3 above was
+                # we wouldn't be able to execute the others below and make a new T-record
+                HTE_File.write(
+                    "T." + LArray[i].zfill(6).replace("\n", "") + ".")
+            Count = Count+3
+            Tobj = (Tobj+"."+ObjectCodeArray[i])
 
     HTE_File.close()
-
-
-
-
-
-
